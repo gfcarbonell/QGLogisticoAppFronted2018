@@ -3,7 +3,6 @@ import {withRouter, Switch, Route} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 //Actions
-//import {loginAuth} from '../actions/authenticate';
 import {logoutAuth} from '../actions/authenticate';
 //Main Components 
 import Header from '../components/header/containers/header';
@@ -11,13 +10,12 @@ import Footer from '../components/footer/containers/footer';
 import NavBar from '../components/nav-bar/containers/nav-bar';
 import NavBarItem from '../components/nav-bar/items/nav-bar-item';
 import Login from '../components/login/containers/login';
-//Logo -> Entity
-import logo from '../../media/images/png/QG-1.png';
+//Avatars
+//Logo Entity
+import logo from '../../media/images/png/QG-1.png'; 
 //Pages 
-//import Home from './home/containers/home';
-//import Menu from './menu/containes/menu';
+import MenuPage from './menu/containes/menu-page';
 //Routes 
-//import PrivateRoute from '../utils/router-private';
 import ProtectedRoute from '../utils/router-protected';
 
 const header = {
@@ -59,14 +57,15 @@ class Main extends React.Component {
                     <NavBarItem to={'/'}> Inicio </NavBarItem>
                     {auth ? null : <NavBarItem to={'/login'} > Iniciar sesión </NavBarItem>}
                     {auth ? <NavBarItem to={'/logout'} > Cerrar sesión </NavBarItem> : null}
-                    {auth ? <NavBarItem to={'/dashboard'} > dashboard </NavBarItem> : null}
+                    <NavBarItem to={'/menu'} > Menu Principal </NavBarItem> 
                 </NavBar>
                 <section>
                     <main>
                         <Switch >
-                            <Route exact path="/" component={()=><li> Hola Mundo </li>} />
-                            <Route path="/login" component={Login} />
-                            <ProtectedRoute isAuthenticated={auth} path="/dashboard" component={()=> <li>xxxx </li>}/>
+                            <Route exact path='/' component={()=><li> Index </li>} />
+                            <Route path='/login/' component={Login} />
+
+                            <Route path='/menu' component={MenuPage} />
                         </Switch>
                     </main>
                 </section>  
