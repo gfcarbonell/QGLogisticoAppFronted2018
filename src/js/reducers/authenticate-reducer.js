@@ -1,8 +1,6 @@
 var stateInitital = { 
-    user: {}, 
+    error: {},
     loading:true,
-    isAuthenticated:false,
-    error: {}
 };
 
 const authenticateReducer = (state = stateInitital, action) =>
@@ -12,20 +10,21 @@ const authenticateReducer = (state = stateInitital, action) =>
             return state;
         case 'FETCH_LOGIN':
             return {
-                user:action.user, 
-                loading:true,
-                isAuthenticated:action.isAuthenticated,
-                error:null
+                loading:false,
+                error:{}
             };
+        case 'FETCH_SESSION':
+            return {
+                loading:false,
+                error:{}
+            }
         case 'FETCH_LOGOUT':
             return state;
         case 'FETCH_ERROR':
-            return {
-                    user: null,
-                    error: action.error,
-                    isAuthenticated:false,
-                    loading:false
-                };
+            return { 
+                error: action.error, 
+                loading:true
+            };
         default:
             return state;
     }

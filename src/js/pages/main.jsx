@@ -1,9 +1,7 @@
 import React from 'react';
 import {withRouter, Switch, Route} from 'react-router-dom';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 //Actions
-import {logoutAuth} from '../actions/authenticate';
 //Main Components 
 import Header from '../components/header/containers/header';
 import Footer from '../components/footer/containers/footer';
@@ -16,7 +14,7 @@ import logo from '../../media/images/png/QG-1.png';
 //Pages 
 import MenuPage from './menu/containes/menu-page';
 //Routes 
-import ProtectedRoute from '../utils/router-protected';
+import PrivateRoute from '../utils/private-route';
 
 const header = {
     logo:{
@@ -35,13 +33,13 @@ const footer = {
 
 const mapStateToProps = (state, props) => {
     return {
-        login: state.authenticateReducer,
+        session:state.sessionReducer
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     const actions = {
-        logoutAuth: bindActionCreators(logoutAuth, dispatch),
+        
     };
     return actions;
 }
@@ -49,23 +47,21 @@ const mapDispatchToProps = (dispatch, props) => {
 
 class Main extends React.Component {
     render() {
-        const auth = this.props.login.isAuthenticated;
         return (
             <div className='main'>
                 <Header header={header} style={style.header}/>
                 <NavBar style={style.navBar}>
                     <NavBarItem to={'/'}> Inicio </NavBarItem>
-                    {auth ? null : <NavBarItem to={'/login'} > Iniciar sesión </NavBarItem>}
-                    {auth ? <NavBarItem to={'/logout'} > Cerrar sesión </NavBarItem> : null}
-                    <NavBarItem to={'/menu'} > Menu Principal </NavBarItem> 
+                    {this.props.session.authenticated?'':<NavBarItem to={'/login'} > Iniciar sesión </NavBarItem>}
+                    {this.props.session.authenticated?<NavBarItem to={'/logout'} > Cerrar sesión </NavBarItem>:''}
+                    {this.props.session.authenticated?<NavBarItem to={'/menu'} > Menu </NavBarItem>:''}
                 </NavBar>
                 <section>
                     <main>
                         <Switch >
                             <Route exact path='/' component={()=><li> Index </li>} />
                             <Route path='/login/' component={Login} />
-
-                            <Route path='/menu' component={MenuPage} />
+                            <PrivateRoute authenticated={this.props.session.authenticated} path='/menu' component={MenuPage} />
                         </Switch>
                     </main>
                 </section>  

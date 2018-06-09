@@ -35,6 +35,7 @@ export function loginAuth(data) {
             })
             .catch(error => {
                 //Error Request
+               
                 if (error.response){
                     let newError = error.response ? error.response.data : 'Something went wrong, please try again.' 
                     dispatch({type:'FETCH_ERROR', error:newError});
@@ -58,3 +59,4 @@ export function getAuthorization() {
         return config;
     })
 }
+

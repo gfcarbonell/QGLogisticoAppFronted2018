@@ -1,35 +1,37 @@
 import React from 'react';
 import {Row, Input, Button, Icon} from 'react-materialize';
 import {Link, Redirect} from 'react-router-dom';
-
+import { withRouter } from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
 //Actions
-import {loginAuth} from '../../../actions/authenticate';
+import {login} from '../../../actions/session';
 import loginAvatar from '../../../../media/images/png/Key-1.png';
 
 const mapStateToProps = (state, props) => {
     return {
-        login: state.authenticateReducer,
+        auth:state.authenticateReducer,
+        session:state.sessionReducer
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     const actions = {
-        loginAuth: bindActionCreators(loginAuth, dispatch),
+        login: bindActionCreators(login, dispatch),
     };
     return actions;
 }
 
 class Login extends React.Component{
+
     handleSubmit = (event) =>{
         event.preventDefault();
         let user = JSON.stringify({
             username:this.inputUsername.input.value,
             password:this.inputPassword.input.value
         });
-        this.props.loginAuth(user);
+        this.props.login(user, this.props.history.location);
     }
     setInputUsername = (element) => {
         this.inputUsername = element;
@@ -38,6 +40,9 @@ class Login extends React.Component{
         this.inputPassword = element;
     }
     render(){
+        if(this.props.session.authenticated){
+            return <Redirect to='/menu'/>
+        }
         return (
             <div className='container-center padding-simple margin-top-bottom-3'>
                 <div className='login z-depth-3'>
@@ -56,7 +61,7 @@ class Login extends React.Component{
                                     <Icon>account_circle</Icon>
                                 </Input>
                                 <p className='error font-style-italic center-align red-text font-weight-bolder'> 
-                                    {this.props.login.error? this.props.login.error.username:'' } 
+                                    {this.props.auth.error? this.props.auth.error.username:''}
                                 </p>
                             </Row>
                             <Row>
@@ -64,7 +69,7 @@ class Login extends React.Component{
                                     <Icon>security</Icon>
                                 </Input>
                                 <p className='error font-style-italic center-align red-text font-weight-bolder'> 
-                                    {this.props.login.error? this.props.login.error.password:'' } 
+                                    {this.props.auth.error? this.props.auth.error.password:''}
                                 </p>
                             </Row>
                             <Row className='container-center'>
@@ -72,6 +77,7 @@ class Login extends React.Component{
                                     Iniciar sesión<Icon right>send</Icon>
                                 </Button>
                             </Row>
+                           
                         </form>
                     </div>
                     <Row className='container-center'> 
@@ -79,7 +85,7 @@ class Login extends React.Component{
                     </Row>
                     <Row>
                         <p className='error font-style-italic center-align red-text font-weight-bolder'> 
-                            {this.props.login.error? this.props.login.error.non_field_errors:'' } 
+                            {this.props.auth.error? this.props.auth.error.non_field_errors:''}
                         </p>
                     </Row>
                 </div>
