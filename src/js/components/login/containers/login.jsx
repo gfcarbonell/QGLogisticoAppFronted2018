@@ -1,7 +1,6 @@
 import React from 'react';
 import {Row, Input, Button, Icon} from 'react-materialize';
 import {Link, Redirect} from 'react-router-dom';
-import { withRouter } from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 

@@ -2,6 +2,7 @@ import React from 'react';
 import MenuItem from '../items/menu-item';
 //Logo Módulo
 import Employees from '../../../../media/images/png/Employees-1.png'; 
+import Providers from '../../../../media/images/png/Providers-1.png'; 
 
 const menu = [
     {
@@ -11,17 +12,17 @@ const menu = [
             src:Employees,
             alt:this.name
         },
-        path: '/employees',
+        to: '/employees',
         order: 1
     },
     {
         id:2,
-        name:'Empleados',
+        name:'Proveedores',
         image: {
-            src:Employees,
+            src:Providers,
             alt:this.name
         },
-        path: '/employees',
+        to: '/providers',
         order: 2
     },
     {
@@ -31,7 +32,7 @@ const menu = [
             src:Employees,
             alt:this.name
         },
-        path: '/employees',
+        to: '/employees',
         order: 1
     },
     {
@@ -41,7 +42,7 @@ const menu = [
             src:Employees,
             alt:this.name
         },
-        path: '/employees'
+        to: '/employees'
     },
     {
         id:5,
@@ -50,7 +51,7 @@ const menu = [
             src:Employees,
             alt:this.name
         },
-        path: '/employees'
+        to: '/employees'
     },
     {
         id:6,
@@ -59,7 +60,7 @@ const menu = [
             src:Employees,
             alt:this.name
         },
-        path: '/employees'
+        to: '/employees'
     },
     {
         id:7,
@@ -68,7 +69,7 @@ const menu = [
             src:Employees,
             alt:this.name
         },
-        path: '/employees'
+        to: '/employees'
     }
 ]
 

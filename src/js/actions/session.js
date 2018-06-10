@@ -3,10 +3,9 @@ import {sessionService} from 'redux-react-session';
 const URL = 'http://127.0.0.1:8000';
 
 export function login (user, history) {
-    console.log(history)
     return (dispatch) => {
         //Begin Request
-        dispatch({type: 'FETCH_REQUEST'});
+        dispatch({type: 'FETCH_LOGIN_REQUEST'});
         return axios
             .post(`${URL}/api-token-auth/`, user, {
                 headers: {
@@ -27,8 +26,21 @@ export function login (user, history) {
                 //Error Request
                 if (error.response){
                     let newError = error.response ? error.response.data : 'Something went wrong, please try again.' 
-                    dispatch({type:'FETCH_ERROR', error:newError});
+                    dispatch({type:'FETCH_LOGIN_ERROR', error:newError});
                 } 
             });
     };
 }
+
+export function logout (history){
+    return (dispatch) => {
+        return new Promise(resolve => {
+            console.log('Logout!')
+            sessionService.deleteSession();
+            sessionService.deleteUser();
+            
+        }).catch(err => {
+            throw (err);
+        });
+    };
+  };
