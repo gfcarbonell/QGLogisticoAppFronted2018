@@ -15,6 +15,7 @@ import Login from '../components/login/containers/login';
 //Logo Entity
 import logo from '../../media/images/png/QG-1.png'; 
 //Pages 
+import ModulePage from './module/containers/module-page';
 import MenuPage from './menu/containes/menu-page';
 import EmployeePage from './employee/containers/employee';
 //Routes 
@@ -66,18 +67,17 @@ class Main extends React.Component {
             <div className='main'>
                 <Header header={header} style={style.header}/>
                 <NavBar style={style.navBar}>
-                    <NavBarItem to={'/'} name={'home'} handleClick={handleUser}> Inicio </NavBarItem>
+                    <NavBarItem to='/' name={'home'} handleClick={handleUser}> Inicio </NavBarItem>
                     {this.props.session.authenticated?'':<NavBarItem to={'/login'} name={'login'}> Iniciar sesión </NavBarItem>}
                     {this.props.session.authenticated?<NavBarItem to={'/logout'} name={'logout'} handleClick={handleLogout}> Cerrar sesión </NavBarItem>:''}
-                    {this.props.session.authenticated?<NavBarItem to={'/menu'} name={'menu'}> Menu </NavBarItem>:''}
+                    {this.props.session.authenticated?<NavBarItem to={'/modules'} name={'modules'}> Módulos </NavBarItem>:''}
                 </NavBar>
                 <section>
                     <main>
                         <Switch >
                             <Route exact path='/' component={()=><li> Index </li>} />
                             <Route path='/login/' component={Login} />
-                            <PrivateRoute authenticated={this.props.session.authenticated} path='/menu' component={MenuPage} />
-                            <PrivateRoute authenticated={this.props.session.authenticated} path='/employees' component={EmployeePage} />
+                            <PrivateRoute authenticated={this.props.session.authenticated} path='/modules' component={ModulePage} />
                         </Switch>
                     </main>
                 </section>  

@@ -1,14 +1,14 @@
-.menu 
+.option 
     padding 1em .5em
-.menu-title 
+.option-title 
     color #eeeeee 
-.menu-items 
+.option-items 
     display flex 
     justify-content space-between
     align-items center
     flex-wrap wrap
 
-.menu-item
+.option-item
     display flex 
     justify-content space-between 
     align-items center
@@ -16,7 +16,7 @@
     padding .5em 0
     border-bottom 1px solid gray
     &-avatar 
-        width 60px 
+        width 80px 
         height 60px
         margin-right .5em
     &-name 
@@ -27,18 +27,22 @@
 
 
 @media (min-width: 576px) 
-    .menu-item
+    .option-item
         flex-direction column 
         border-bottom 1px solid transparent
         width 350px
         &-avatar 
             height 150px 
             width 200px
+            margin-right 0
 @media (min-width: 1000px) 
-    .menu-item
+    .option-item
         flex-direction column 
         border-bottom 1px solid transparent
         width 350px
         &-avatar 
-            height 180px 
-            width 240px 
+            border-radius .5em
+            padding .5em  
+            margin .5em                                                                                                                                                                     
+            height 200px 
+            width 250px 
