@@ -1,27 +1,31 @@
 var stateInitital = { 
     error: [],
+    menus: [],
     loading:true,
 };
 
-const authenticateReducer = (state = stateInitital, action) =>
+const menuReducer = (state = stateInitital, action) =>
 {
     switch (action.type) {
-        case 'FETCH_LOGIN_REQUEST':
+        case 'FETCH_MENUS_REQUEST':
             return state;
-        case 'FETCH_SESSION':
+        case 'FETCH_MENUS_SUCCESS':
+            let menus = action.data;
             let loading = action.loading;
-            return {
+            return { 
                 ...state,
+                menus,
                 loading
             }
-        case 'FETCH_LOGIN_ERROR':
-            let error = action.error;
+        case 'FETCH_MENUS_ERROR':
+            let error =  action.error;
             return { 
                 ...state,
                 error
-            }
+            };
         default:
             return state;
     }
 }
-export default authenticateReducer;
+
+export default menuReducer;

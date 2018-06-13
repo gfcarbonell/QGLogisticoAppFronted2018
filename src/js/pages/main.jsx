@@ -16,8 +16,6 @@ import Login from '../components/login/containers/login';
 import logo from '../../media/images/png/QG-1.png'; 
 //Pages 
 import ModulePage from './module/containers/module-page';
-import MenuPage from './menu/containes/menu-page';
-import EmployeePage from './employee/containers/employee';
 //Routes 
 import PrivateRoute from '../utils/private-route';
 

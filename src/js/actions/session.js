@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {sessionService} from 'redux-react-session';
-const URL = 'http://127.0.0.1:8000';
+export const URL = 'http://127.0.0.1:8000';
+export const API = 'api/v1';
 
 export function login (user, history) {
     return (dispatch) => {
@@ -19,7 +20,7 @@ export function login (user, history) {
                 .then(() => {
                     sessionService.saveUser(response.data)
                     .then(() => {
-                        dispatch({type: 'FETCH_SESSION'});
+                        dispatch({type: 'FETCH_SESSION', loading:false});
                     }).catch(err => console.error(err));
                 }).catch(err => console.error(err));
             }).catch(error => {

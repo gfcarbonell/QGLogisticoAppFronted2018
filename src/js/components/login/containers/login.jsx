@@ -32,6 +32,7 @@ class Login extends React.Component{
         });
         this.props.login(user, this.props.history.location);
     }
+
     setInputUsername = (element) => {
         this.inputUsername = element;
     }
@@ -39,8 +40,9 @@ class Login extends React.Component{
         this.inputPassword = element;
     }
     render(){
+        console.log(this.props.session, this.props.auth)
         if(this.props.session.authenticated){
-            return <Redirect to='/menu'/>
+            return <Redirect to='/modules'/>
         }
         return (
             <div className='container-center padding-simple margin-top-bottom-3'>

@@ -3,12 +3,13 @@ import {sessionService} from 'redux-react-session';
 import {URL, API} from './session';
 
 
-export function getUsers () {
+export function getMenus () {
     return (dispatch) => {
+        dispatch({type: 'FETCH_MODULES_REQUEST'});
         return sessionService.loadUser()  
             .then(currentSession => {
                 return axios
-                .get(`${URL}/${API}/users/`, {
+                .get(`${URL}/${API}/menus/`, {
                     headers: {
                         'Accept':'application/json',
                         'Content-Type':'application/json',
@@ -16,12 +17,12 @@ export function getUsers () {
                     }
                 })  
                 .then((response)=>{
-                    console.log(response)
+                    dispatch({type:'FETCH_MENUS_SUCCESS', data:response.data, loading:false});
                 }).catch(error => {
                     //Error Request
                     if (error.response){
                         let newError = error.response ? error.response.data : 'Something went wrong, please try again.' 
-                        dispatch({type:'FETCH_LOGIN_ERROR', error:newError, loading:false});
+                        dispatch({type:'FETCH_MENUS_ERROR', error:newError});
                     } 
                 });
             })
@@ -29,7 +30,7 @@ export function getUsers () {
                 //Error Request
                 if (error.response){
                     let newError = error.response ? error.response.data : 'Something went wrong, please try again.' 
-                    console.log(newError)
+                    dispatch({type:'FETCH_MENUS_ERROR', error:newError});
                 } 
             });
     };
