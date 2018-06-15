@@ -9,9 +9,9 @@ const authenticateReducer = (state = stateInitital, action) =>
         case 'FETCH_LOGIN_REQUEST':
             return state;
         case 'FETCH_SESSION':
-            let loading = action.loading;
+            let loading = action.loading
             return {
-                ...state,
+                ...state, 
                 loading
             }
         case 'FETCH_LOGIN_ERROR':
@@ -25,3 +25,4 @@ const authenticateReducer = (state = stateInitital, action) =>
     }
 }
 export default authenticateReducer;
+

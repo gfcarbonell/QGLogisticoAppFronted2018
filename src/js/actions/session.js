@@ -20,6 +20,7 @@ export function login (user, history) {
                 .then(() => {
                     sessionService.saveUser(response.data)
                     .then(() => {
+                        history.push('/modules');
                         dispatch({type: 'FETCH_SESSION', loading:false});
                     }).catch(err => console.error(err));
                 }).catch(err => console.error(err));

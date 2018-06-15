@@ -8,7 +8,7 @@ import './css/index.css'
 import {sessionService} from 'redux-react-session';
 
 // Init the session service
-sessionService.initSessionService(RootStore);
+sessionService.initSessionService(RootStore, { driver: 'COOKIES' });
 
 
 ReactDOM.render(

@@ -4,21 +4,27 @@ import {connect} from 'react-redux';
 import {Route, Link} from 'react-router-dom';
 import {getModules} from '../../../actions/module';
 import {getMenus} from '../../../actions/menu';
+import {getSubmenus} from '../../../actions/submenu';
 import {Col, ProgressBar} from 'react-materialize';
 import ModuleSectionMenu from '../sections/module-section-menu';
+
+import PrivateRoute from '../../../utils/private-route';
 
 
 const mapStateToProps = (state, props) => {
     return {
         dataModules:state.moduleReducer,
-        dataMenus:state.menuReducer
+        dataMenus:state.menuReducer,
+        dataSubmenus:state.submenuReducer,
+        session:state.sessionReducer
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     const actions = {
         getModules:bindActionCreators(getModules, dispatch),
-        getMenus:bindActionCreators(getMenus, dispatch)
+        getMenus:bindActionCreators(getMenus, dispatch),
+        getSubmenus:bindActionCreators(getSubmenus, dispatch),
     };
     return actions;
 }
@@ -28,10 +34,13 @@ class ModulePage extends React.Component{
     componentWillMount(){
         this.props.getModules();
         this.props.getMenus();
+        this.props.getSubmenus();
     }
     render () {
         let modules = this.props.dataModules.modules;
         let menus = this.props.dataMenus.menus;
+        let submenus = this.props.dataSubmenus.submenus;
+        let authenticated = this.props.session.authenticated;
 
         if(this.props.dataModules.loading){
             return (
@@ -42,7 +51,6 @@ class ModulePage extends React.Component{
                 </div>
             )
         }
-
         return (
             <div className='row'>
                 <div className='modules'>
@@ -66,14 +74,14 @@ class ModulePage extends React.Component{
                     </ul>
                 </div>
                 <ul className='modules-menus'>
-                    {
-                        menus.map((item, index)=>{
-                            return <Route  
-                                key={index} 
-                                path={`${this.props.match.url}${item.module.url}`} 
-                                component={()=><ModuleSectionMenu data={item} />} />
-                        })
-                    }
+                    <div className="row">
+                        <div className="col s12 m5 l4"> 
+                       
+                        </div>
+                        <div className="col s12 m7 l8"> 
+                            
+                        </div>
+                    </div>
                 </ul>
             </div>
         )

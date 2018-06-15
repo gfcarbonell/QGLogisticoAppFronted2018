@@ -1,6 +1,6 @@
 import React from 'react';
 import {Row, Input, Button, Icon} from 'react-materialize';
-import {Link, Redirect} from 'react-router-dom';
+import {Link, Redirect, withRouter} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -23,16 +23,14 @@ const mapDispatchToProps = (dispatch, props) => {
 }
 
 class Login extends React.Component{
-
-    handleSubmit = (event) =>{
+    handleSubmit = (event, history) =>{
         event.preventDefault();
         let user = JSON.stringify({
             username:this.inputUsername.input.value,
             password:this.inputPassword.input.value
         });
-        this.props.login(user, this.props.history.location);
+        this.props.login(user, history);
     }
-
     setInputUsername = (element) => {
         this.inputUsername = element;
     }
@@ -40,9 +38,15 @@ class Login extends React.Component{
         this.inputPassword = element;
     }
     render(){
-        console.log(this.props.session, this.props.auth)
+        const SubmitButton = withRouter(({ history }) => (
+            <Button
+                className='red' type='submit' waves='light'
+                onClick={(event) => this.handleSubmit(event, history)}>
+                Iniciar sesión<Icon right>send</Icon>
+            </Button>
+        ));
         if(this.props.session.authenticated){
-            return <Redirect to='/modules'/>
+            return <Redirect to='/modules' />
         }
         return (
             <div className='container-center padding-simple margin-top-bottom-3'>
@@ -56,7 +60,7 @@ class Login extends React.Component{
                         </div>
                     </div>
                     <div>
-                        <form method='post' onSubmit={this.handleSubmit}>
+                        <form method='post' onSubmit={this.onSubmit}>
                             <Row>
                                 <Input s={12} ref={this.setInputUsername} label={'Nombre de usuario'} validate>
                                     <Icon>account_circle</Icon>
@@ -74,11 +78,8 @@ class Login extends React.Component{
                                 </p>
                             </Row>
                             <Row className='container-center'>
-                                <Button className='red' type='submit' waves='light'>
-                                    Iniciar sesión<Icon right>send</Icon>
-                                </Button>
+                                <SubmitButton />
                             </Row>
-                           
                         </form>
                     </div>
                     <Row className='container-center'> 
