@@ -45,9 +45,6 @@ class Login extends React.Component{
                 Iniciar sesión<Icon right>send</Icon>
             </Button>
         ));
-        if(this.props.session.authenticated){
-            return <Redirect to='/modules' />
-        }
         return (
             <div className='container-center padding-simple margin-top-bottom-3'>
                 <div className='login z-depth-3'>

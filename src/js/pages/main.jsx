@@ -56,14 +56,15 @@ class Main extends React.Component {
     }
     render() {
         let {handleLogout} = this;
+        let authenticated = this.props.session.authenticated;
         return (
             <div className='main'>
                 <Header header={header} style={style.header}/>
                 <NavBar style={style.navBar}>
-                    {this.props.session.authenticated?<NavBarItem to={'/'}>Página Principal</NavBarItem>:<NavBarItem to={'/'} name={'index'}>Página Principal</NavBarItem>}
-                    {this.props.session.authenticated?'':<NavBarItem to={'/login'}> Iniciar sesión </NavBarItem>}
-                    {this.props.session.authenticated?<NavBarItem to={'/logout'} handleClick={handleLogout}> Cerrar sesión </NavBarItem>:''}
-                    {this.props.session.authenticated?<NavBarItem to={'/modules'}> Módulos </NavBarItem>:''}
+                    {authenticated?<NavBarItem to={'/'}>Página Principal</NavBarItem>:<NavBarItem to={'/'} name={'index'}>Página Principal</NavBarItem>}
+                    {authenticated?'':<NavBarItem to={'/login'}> Iniciar sesión </NavBarItem>}
+                    {authenticated?<NavBarItem to={'/logout'} handleClick={handleLogout}> Cerrar sesión </NavBarItem>:''}
+                    {authenticated?<NavBarItem to={'/modules'}> Módulos </NavBarItem>:''}
                 </NavBar>
                 <section>
                     <main>
