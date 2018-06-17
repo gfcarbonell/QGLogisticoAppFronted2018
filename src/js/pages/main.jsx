@@ -1,5 +1,5 @@
 import React from 'react';
-import {withRouter, Switch, Route} from 'react-router-dom';
+import {withRouter, Switch} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 //Actions
@@ -13,12 +13,13 @@ import NavBarItem from '../components/nav-bar/items/nav-bar-item';
 //Logo Entity
 import logo from '../../media/images/png/QG-1.png'; 
 //Pages 
-//import HomePage from './home/containers/home-page';
-import ModulePage from './module/containers/module-page';
+import MenuPage from './menu/containers/menu-page';
+import EmployeePage from './employee/containers/employee-page'
 import Login from '../components/login/containers/login';
 //Routes 
 import PrivateRoute from '../utils/private-route';
-
+import PublicRoute from '../utils/public-route';
+import {getByUser} from '../actions/user';
 
 const header = {
     logo:{
@@ -43,7 +44,8 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => {
     const actions = {
-        logout:bindActionCreators(logout, dispatch)
+        logout:bindActionCreators(logout, dispatch),
+        getByUser:bindActionCreators(getByUser, dispatch)
     };
     return actions;
 }
@@ -54,23 +56,30 @@ class Main extends React.Component {
         event.preventDefault();
         this.props.logout(this.props.history.location)
     }
+    handleUser = (event) =>{
+        let user = {
+            'username':'admin'
+        }
+        this.props.getByUser(JSON.stringify(user))
+    }
     render() {
-        let {handleLogout} = this;
+        let {handleLogout, handleUser} = this;
         let authenticated = this.props.session.authenticated;
         return (
             <div className='main'>
                 <Header header={header} style={style.header}/>
                 <NavBar style={style.navBar}>
-                    {authenticated?<NavBarItem to={'/'}>Página Principal</NavBarItem>:<NavBarItem to={'/'} name={'index'}>Página Principal</NavBarItem>}
+                    {authenticated?<NavBarItem to={'/'} handleClick={handleUser}>Página Principal</NavBarItem>:<NavBarItem to={'/'} name={'index'}>Página Principal</NavBarItem>}
                     {authenticated?'':<NavBarItem to={'/login'}> Iniciar sesión </NavBarItem>}
                     {authenticated?<NavBarItem to={'/logout'} handleClick={handleLogout}> Cerrar sesión </NavBarItem>:''}
-                    {authenticated?<NavBarItem to={'/modules'}> Módulos </NavBarItem>:''}
+                    {authenticated?<NavBarItem to={'/main-menu'}> Menú Principal </NavBarItem>:''}
                 </NavBar>
                 <section>
                     <main>
                         <Switch >
-                            <Route path='/login' component={Login} />
-                            <PrivateRoute authenticated={this.props.session.authenticated} path='/modules' component={ModulePage} />
+                            <PublicRoute authenticated={this.props.session.authenticated} path='/login' component={Login} />
+                            <PrivateRoute authenticated={this.props.session.authenticated} path='/employees' component={EmployeePage} />
+                            <PrivateRoute authenticated={this.props.session.authenticated} path='/main-menu' component={MenuPage} />
                         </Switch>
                     </main>
                 </section>  

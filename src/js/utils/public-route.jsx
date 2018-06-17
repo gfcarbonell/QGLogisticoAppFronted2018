@@ -11,7 +11,7 @@ const PublicRoute = ({ component, exact = false, path, authenticated }) => (
         React.createElement(component, props)
       ) : (
         <Redirect to={{
-          pathname: '/modules',
+          pathname: '/main-menu',
           state: { from: props.location }
         }}/>
       )
