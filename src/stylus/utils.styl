@@ -119,10 +119,32 @@
     display block
     width 100%
     height 100%
+.drop-icon 
+    margin 4px 0
+.drop-file-info 
+    font-size .8em
+    color gray
 .container-center{
     display flex 
     justify-content center 
     align-items center
+}
+
+.tabs{
+    background transparent
+}
+.tabs .tab a{
+    color:gray;
+}
+.tabs .tab a:hover,.tabs .tab a.active {
+	background-color:transparent;
+	color:#7cb342;
+}
+.tabs .tab.disabled a,.tabs .tab.disabled a:hover {
+	color:rgba(102,147,153,0.7);	
+}
+.tabs .indicator {
+	background-color:#7cb342;
 }
 @media (min-width: 576px)
     .title 

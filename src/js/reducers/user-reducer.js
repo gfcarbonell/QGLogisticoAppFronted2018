@@ -1,5 +1,5 @@
 var stateInitital = { 
-    error: {},
+    error: [],
     users: [],
     loading:true,
 };
@@ -7,13 +7,24 @@ var stateInitital = {
 const userReducer = (state = stateInitital, action) =>
 {
     switch (action.type) {
-        case 'FETCH_USER_REQUEST':
+        case 'REQUEST_ANSWER':
             return state;
-        case 'FETCH_USER_SUCCESS':
+        case 'GET_USERS':
             return { 
-                error: {},
+                ...state,
                 users: action.users,
                 loading:false,
+            }
+        case 'ADD_USER':
+            return {
+                ...state,
+                users:state.users.concat(action.data),
+                loading:action.loading
+            }
+        case 'USER_ERROR':
+            return { 
+                ...state,
+                error:action.error
             }
         default:
             return state;

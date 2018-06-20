@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+//import {bindActionCreators} from 'redux';
 import defaultImage from '../../../../media/images/png/Default-1.png';
 import PrivateRoute from '../../../utils/private-route';
 
@@ -12,7 +12,7 @@ import AddEmployeeSection from '../sections/add-employee-section';
 
 const mapStateToProps = (state, props) => {
     return {
-        session:state.sessionReducer
+        session:state.sessionReducer,
     }
 }
 
@@ -60,7 +60,7 @@ class EmployeePage extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className='panel-right col s12 m7 l8'> 
+                <div className='panel-right col s12 m7 l9'> 
                     <div className='panel-right-wrapper'>
                         <PrivateRoute
                             authenticated={authenticated}
