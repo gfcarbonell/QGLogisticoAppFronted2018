@@ -17,7 +17,6 @@ const rootReducer = combineReducers({
     moduleReducer,
     menuReducer,
     submenuReducer,
-    userReducer,
 });
 
 export default rootReducer;

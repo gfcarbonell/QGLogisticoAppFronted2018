@@ -5,9 +5,9 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {addUserProfile} from '../../../actions/user-profile';
 import {addUser} from '../../../actions/user';
+import {getByUserUsername, getByUserEmail} from '../../../actions/user';
 import $ from 'jquery';
 import 'materialize-css';
-
 
 
 const mapStateToProps = (state, props) => {
@@ -21,6 +21,8 @@ const mapDispatchToProps = (dispatch, props) => {
     const actions = {
         addUserProfile:bindActionCreators(addUserProfile, dispatch),
         addUser:bindActionCreators(addUser, dispatch),
+        getByUserUsername:bindActionCreators(getByUserUsername, dispatch),
+        getByUserEmail:bindActionCreators(getByUserEmail, dispatch),
     };
     return actions;
 }
@@ -40,28 +42,23 @@ class AddEmployeeSection extends React.Component{
     /* Submit */
     handleSubmit = (event) => {
         event.preventDefault();
-        let dataUser = JSON.stringify({
-            username:this.username.input.value,
-            email:this.email.input.value,
-            password:this.password.input.value,
-            confirm_password:this.confirmPassword.input.value
-        });
-        this.props.addUser(dataUser)
-        .then((data)=>{
-            let dataUserProfile = JSON.stringify({
-                name:this.name.input.value,
-                last_name:this.lastName.input.value,
-                mother_last_name:this.motherLastName.input.value,
-                birthday:this.birthday.value.split('-').reverse().join('-'),
-                gender: $('input:radio[name=gender]:checked').val(),
-                marital_status:this.maritalStatus.state.value,
-                blood_group:this.bloodGroup.state.value,
-                auth_user_id:data.id
-            })  
-            this.props.addUserProfile(dataUserProfile);
-        }); 
-        
-        
+        let dataUserProfile = {
+            name:this.name.input.value,
+            last_name:this.lastName.input.value,
+            mother_last_name:this.motherLastName.input.value,
+            birthday:this.birthday.value.split('-').reverse().join('-'),
+            gender: $('input:radio[name=gender]:checked').val(),
+            marital_status:this.maritalStatus.state.value,
+            blood_group:this.bloodGroup.state.value,
+            auth_user:{
+                username:this.username.input.value,
+                email:this.email.input.value,
+                password:this.password.input.value,
+                confirm_password:this.confirmPassword.input.value
+            }
+        }
+        console.log(JSON.stringify(dataUserProfile));
+        this.props.addUserProfile(JSON.stringify(dataUserProfile));
     }
     /* Personal info */
     setLastName = (element) => {
@@ -107,7 +104,14 @@ class AddEmployeeSection extends React.Component{
     setConfirmPassword = (element) => {
         this.confirmPassword = element;
     }
-
+    handleKeyPressUsername = (event) => {
+        let data = JSON.stringify({username:event.target.value})
+        //this.props.getByUserUsername(data);
+    }
+    handleKeyPressEmail = (event) => {
+        let data = JSON.stringify({email:event.target.value})
+        //this.props.getByUserEmail(data);
+    }
     render(){
         let imageAccept = [
             'image/png',
@@ -184,13 +188,13 @@ class AddEmployeeSection extends React.Component{
                             <Row>
                                 <div className='col s12 l4'>
                                     <Input 
-                                            className='with-gap'
-                                            s={6} l={6} 
-                                            name='gender' 
-                                            type='radio' 
-                                            checked={true}
-                                            value='Masculino' 
-                                            label='Masculino' />
+                                        className='with-gap'
+                                        s={6} l={6} 
+                                        name='gender' 
+                                        type='radio' 
+                                        checked={true}
+                                        value='Masculino' 
+                                        label='Masculino' />
                                     <Input   
                                             className='with-gap'
                                             s={6} l={6} 
@@ -247,19 +251,43 @@ class AddEmployeeSection extends React.Component{
                             </Row>
                         </div>                                      
                     </div>
+                    <div id='test-swipe-2' className='col s12'>
+                        <Row>
+                            <div className='col s12 l4'>
+                                <Input s={12} l={12} type='select' label='Area' defaultValue='1'>
+                                    <option value='1'>Option 1</option>
+                                    <option value='2'>Option 2</option>
+                                    <option value='3'>Option 3</option>
+                                </Input>
+                            </div>
+                        </Row>
+                    </div>
                     <div id='test-swipe-3' className='col s12'>
                         <div>
                             <Row>
                                 <div className='col s12 l6'>
-                                    <Input ref={this.setUsername} s={12} l={12} label='Nombre de usuario' validate required={true}/>
+                                    <Input 
+                                        ref={this.setUsername} 
+                                        s={12} l={12} 
+                                        label='Nombre de usuario' 
+                                        onKeyPress={this.handleKeyPressUsername}
+                                        validate 
+                                        required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.dataUser.error? this.props.dataUser.error.username:''}
+                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.username:''}
                                     </p>
                                 </div>
                                 <div className='col s12 l6'>
-                                    <Input ref={this.setEmail} s={12} l={12} label='email' type={'email'} validate required={true}/>
+                                    <Input 
+                                        ref={this.setEmail} 
+                                        s={12} l={12} 
+                                        label='email' 
+                                        onKeyPress={this.handleKeyPressEmail}
+                                        type={'email'} 
+                                        validate 
+                                        required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.dataUser.error? this.props.dataUser.error.email:''}
+                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.email:''}
                                     </p>
                                 </div>
                             </Row>
@@ -272,8 +300,8 @@ class AddEmployeeSection extends React.Component{
                                         type={'password'}
                                         validate required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.dataUser.error? this.props.dataUser.error.password:''}
-                                        {this.props.dataUser.error? this.props.dataUser.error.non_field_errors:''}
+                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.password:''}    
+                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.non_field_errors:''}      
                                     </p>
                                 </div>
                                 <div className='col s12 l6'>
@@ -285,12 +313,70 @@ class AddEmployeeSection extends React.Component{
                                         validate required={true}>
                                     </Input>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.dataUser.error? this.props.dataUser.error.confirm_password:''}
-                                        {this.props.dataUser.error? this.props.dataUser.error.non_field_errors:''}
+                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.confirm_password:''}  
+                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.non_field_errors:''}  
                                     </p>
                                 </div>
                             </Row>
                         </div>
+                    </div>
+                    <div id='test-swipe-4' className='col s12'>
+                        <Row>
+                            <div className='col s12 l4'>
+                                <Input 
+                                    ref={this.setCellPhone} 
+                                    s={12} l={12} 
+                                    label='Celular' 
+                                    validate required={true}/>
+                                <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
+                                    
+                                </p>
+                            </div>
+                            <div className='col s12 l4'>
+                                <Input 
+                                    ref={this.setTelephone} 
+                                    s={12} l={12} 
+                                    label='Teléfono' 
+                                    validate></Input>
+                                <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
+                                    
+                                </p>
+                            </div>
+                            <div className='col s12 l4'>
+                                <Input 
+                                    ref={this.setEmailPersonal} 
+                                    s={12} l={12} 
+                                    label='Correo electrónico personal' 
+                                    validate 
+                                    required={true}/>
+                                <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
+                                   
+                                </p>
+                            </div>
+                        </Row>
+                        <Row>
+                            <div className='col s12 l6'>
+                                <Input 
+                                    ref={this.setDescription} 
+                                    type={'textarea'} 
+                                    s={12} l={12} 
+                                    label='Descripción'/>
+                                <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
+                                    
+                                </p>
+                            </div>
+                            <div className='col s12 l6'>
+                                <Input 
+                                    ref={this.setObservation} 
+                                    type={'textarea'} 
+                                    s={12} l={12} 
+                                    label='Observación' 
+                                    required={true}/>
+                                <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
+                                    
+                                </p>
+                            </div>
+                        </Row>
                     </div>
                     <Row>
                         <Button
