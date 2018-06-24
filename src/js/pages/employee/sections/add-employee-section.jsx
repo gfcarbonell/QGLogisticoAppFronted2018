@@ -40,28 +40,23 @@ class AddEmployeeSection extends React.Component{
     /* Submit */
     handleSubmit = (event) => {
         event.preventDefault();
-        let dataUser = JSON.stringify({
-            username:this.username.input.value,
-            email:this.email.input.value,
-            password:this.password.input.value,
-            confirm_password:this.confirmPassword.input.value
-        });
-        this.props.addUser(dataUser)
-        .then((data)=>{
-            let dataUserProfile = JSON.stringify({
-                name:this.name.input.value,
-                last_name:this.lastName.input.value,
-                mother_last_name:this.motherLastName.input.value,
-                birthday:this.birthday.value.split('-').reverse().join('-'),
-                gender: $('input:radio[name=gender]:checked').val(),
-                marital_status:this.maritalStatus.state.value,
-                blood_group:this.bloodGroup.state.value,
-                auth_user_id:data.id
-            })  
-            this.props.addUserProfile(dataUserProfile);
-        }); 
-        
-        
+        let dataUserProfile = JSON.stringify({
+            name:this.name.input.value,
+            last_name:this.lastName.input.value,
+            mother_last_name:this.motherLastName.input.value,
+            birthday:this.birthday.value.split('-').reverse().join('-'),
+            gender: $('input:radio[name=gender]:checked').val(),
+            marital_status:this.maritalStatus.state.value,
+            blood_group:this.bloodGroup.state.value,
+            auth_user:{
+                username:this.username.input.value,
+                email:this.email.input.value,
+                password:this.password.input.value,
+                confirm_password:this.confirmPassword.input.value
+            }
+        })  
+        console.log(dataUserProfile)
+        this.props.addUserProfile(dataUserProfile);  
     }
     /* Personal info */
     setLastName = (element) => {
