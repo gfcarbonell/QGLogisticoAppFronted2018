@@ -19,7 +19,7 @@ import Login from '../components/login/containers/login';
 //Routes 
 import PrivateRoute from '../utils/private-route';
 import PublicRoute from '../utils/public-route';
-import {getByUser} from '../actions/user';
+
 
 const header = {
     logo:{
@@ -45,7 +45,6 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = (dispatch, props) => {
     const actions = {
         logout:bindActionCreators(logout, dispatch),
-        getByUser:bindActionCreators(getByUser, dispatch)
     };
     return actions;
 }
@@ -57,10 +56,7 @@ class Main extends React.Component {
         this.props.logout(this.props.history.location)
     }
     handleUser = (event) =>{
-        let user = {
-            'username':'admin'
-        }
-        this.props.getByUser(JSON.stringify(user))
+
     }
     render() {
         let {handleLogout, handleUser} = this;

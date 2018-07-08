@@ -2,6 +2,7 @@ var stateInitital = {
     error: [],
     users: [],
     loading:true,
+    exist:false,
 };
 
 const userReducer = (state = stateInitital, action) =>
@@ -14,6 +15,11 @@ const userReducer = (state = stateInitital, action) =>
                 ...state,
                 users: action.users,
                 loading:false,
+            }
+        case 'GET_BY_USERNAME':
+            return { 
+                ...state,
+                exist:action.exist,
             }
         case 'ADD_USER':
             return {
