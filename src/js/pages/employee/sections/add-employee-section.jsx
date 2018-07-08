@@ -3,26 +3,26 @@ import {Row, Input, Button, Icon} from 'react-materialize';
 import Dropzone from 'react-dropzone';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {addUserProfile} from '../../../actions/user-profile';
 import {addUser} from '../../../actions/user';
 import {getByUserUsername, getByUserEmail} from '../../../actions/user';
+import {getIdentificationDocumentType} from '../../../actions/identification-document-type';
 import $ from 'jquery';
 import 'materialize-css';
 
 
 const mapStateToProps = (state, props) => {
     return {
-        data:state.userProfileReducer,
-        dataUser:state.userReducer
+        dataUser:state.userReducer,
+        identificationDocumentTypeData: state.identificationDocumentTypeReducer
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     const actions = {
-        addUserProfile:bindActionCreators(addUserProfile, dispatch),
         addUser:bindActionCreators(addUser, dispatch),
         getByUserUsername:bindActionCreators(getByUserUsername, dispatch),
         getByUserEmail:bindActionCreators(getByUserEmail, dispatch),
+        getIdentificationDocumentType:bindActionCreators(getIdentificationDocumentType, dispatch)
     };
     return actions;
 }
@@ -35,6 +35,8 @@ class AddEmployeeSection extends React.Component{
             selectYears: 120 // Creates a dropdown of 15 years to control year
           });
         $('.tabs').tabs();
+
+        this.props.getIdentificationDocumentType();
     }
     setForm = (element) => {
         this.form = element;
@@ -49,7 +51,6 @@ class AddEmployeeSection extends React.Component{
             birthday:this.birthday.value.split('-').reverse().join('-'),
             gender: $('input:radio[name=gender]:checked').val(),
             marital_status:this.maritalStatus.state.value,
-            blood_group:this.bloodGroup.state.value,
             auth_user:{
                 username:this.username.input.value,
                 email:this.email.input.value,
@@ -58,7 +59,6 @@ class AddEmployeeSection extends React.Component{
             }
         }
         console.log(JSON.stringify(dataUserProfile));
-        this.props.addUserProfile(JSON.stringify(dataUserProfile));
     }
     /* Personal info */
     setLastName = (element) => {
@@ -75,9 +75,6 @@ class AddEmployeeSection extends React.Component{
     }
     setMaritalStatus = (element) => {
         this.maritalStatus = element;
-    }
-    setBloodGroup = (element) => {
-        this.bloodGroup = element;
     }
     setPhotography = (element) => {
         this.photography = element;
@@ -118,6 +115,7 @@ class AddEmployeeSection extends React.Component{
             'image/gif',
             'image/jpeg'
         ]
+        let identificationDocumentTypeData = this.props.identificationDocumentTypeData.identificationDocumentType;
         return (
             <div>
                 <Row>
@@ -143,28 +141,30 @@ class AddEmployeeSection extends React.Component{
                                 <div className='col s12 l4'>
                                     <Input ref={this.setLastName} s={12} l={12} label='Apellido paterno' validate required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.data.error? this.props.data.error.last_name:''}
+                                    
                                     </p>
                                 </div>
                                 <div className='col s12 l4'>
                                     <Input ref={this.setMotherLastName} s={12} l={12} label='Apellido materno' validate></Input>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.data.error? this.props.data.error.mother_last_name:''}
+
                                     </p>
                                 </div>
                                 <div className='col s12 l4'>
                                     <Input ref={this.setName} s={12} l={12} label='Nombre(s)' validate required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.data.error? this.props.data.error.name:''}
+
                                     </p>
                                 </div>
                             </Row>
                             <Row>
                                 <div className='col s12 l4'>
                                     <Input s={12} l={12} type='select' label='Tipo documento de identificación' defaultValue='1'>
-                                        <option value='1'>Option 1</option>
-                                        <option value='2'>Option 2</option>
-                                        <option value='3'>Option 3</option>
+                                        {
+                                            identificationDocumentTypeData.map((item, index)=>(
+                                                <option key={item.id} value={item.id}>{item.name}</option>
+                                            ))
+                                        }
                                     </Input>
                                 </div>
                                 <div className='col s12 l4'>
@@ -181,7 +181,7 @@ class AddEmployeeSection extends React.Component{
                                         <label htmlFor='birthday'>Fecha de nacimineto</label>
                                     </div>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.data.error? this.props.data.error.birthday:''}
+
                                     </p>
                                 </div>
                             </Row>
@@ -203,7 +203,7 @@ class AddEmployeeSection extends React.Component{
                                             value='Femenino' 
                                             label='Femenino' />
                                 </div>
-                                <div className='col s12 l2'>
+                                <div className='col s12 l4'>
                                     <Input 
                                         ref={this.setMaritalStatus} s={12} l={12} 
                                         type='select' 
@@ -215,20 +215,6 @@ class AddEmployeeSection extends React.Component{
                                         <option value='Divorciado'>Divorciado</option>
                                         <option value='Viudo'>Viudo</option>
                                     </Input>
-                                </div>
-                                <div className='col s12 l2'>
-                                    <Input ref={this.setBloodGroup} s={12} l={12} 
-                                        type='select' label='Grupo sanguíneo' 
-                                        defaultValue='A+'>
-                                        <option value='A+'>A+</option>
-                                        <option value='A-'>A-</option>
-                                        <option value='B+'>B+</option>
-                                        <option value='B-'>B-</option>
-                                        <option value='AB+'>AB+</option>
-                                        <option value='AB-'>AB-</option>
-                                        <option value='O+'>O+</option>
-                                        <option value='O-'>O-</option>
-                                    </Input>  
                                 </div>
                                 <div className='col s12 l4'>
                                     <div className='col input-field s12 l12'>
@@ -254,11 +240,93 @@ class AddEmployeeSection extends React.Component{
                     <div id='test-swipe-2' className='col s12'>
                         <Row>
                             <div className='col s12 l4'>
-                                <Input s={12} l={12} type='select' label='Area' defaultValue='1'>
+                                <Input s={12} l={12} type='select' label='Entidad' defaultValue='1'>
                                     <option value='1'>Option 1</option>
                                     <option value='2'>Option 2</option>
                                     <option value='3'>Option 3</option>
                                 </Input>
+                            </div>
+                            <div className='col s12 l4'>
+                                <Input s={12} l={12} type='select' label='Sede' defaultValue='1'>
+                                    <option value='1'>Option 1</option>
+                                    <option value='2'>Option 2</option>
+                                    <option value='3'>Option 3</option>
+                                </Input>
+                            </div>
+                            <div className='col s12 l4'>
+                                <Input s={12} l={12} type='select' label='Área' defaultValue='1'>
+                                    <option value='1'>Option 1</option>
+                                    <option value='2'>Option 2</option>
+                                    <option value='3'>Option 3</option>
+                                </Input>
+                            </div>
+                        </Row>
+                        <Row>
+                            <div className='col s12 l4'>
+                                <Input s={12} l={12} type='select' label='Tipoe empleado' defaultValue='1'>
+                                    <option value='1'>Option 1</option>
+                                    <option value='2'>Option 2</option>
+                                    <option value='3'>Option 3</option>
+                                </Input>
+                            </div>
+                            <div className='col s12 l4'>
+                                <Input s={12} l={12} type='select' label='Cargo Empleado' defaultValue='1'>
+                                    <option value='1'>Option 1</option>
+                                    <option value='2'>Option 2</option>
+                                    <option value='3'>Option 3</option>
+                                </Input>
+                            </div>
+                            <div className='col s12 l4'>
+                                <Input s={12} l={12} type='select' label='Nivel Instrucción' defaultValue='1'>
+                                    <option value='Sin nivel'>Sin nivel</option>
+                                    <option value='Pre escolar'>Pre escolar</option>
+                                    <option value='Primaria'>Primaria</option>
+                                    <option value='Secundaria'>Secundaria</option>
+                                    <option value='Superior'>Superior</option>
+                                </Input>
+                            </div>
+                        </Row>
+                        <Row>
+                            <div className='col s12 l4'>
+                                <div className='col input-field s12 l12'>
+                                    <input 
+                                        className='datepicker validate' 
+                                        name='start_date_contract'
+                                        label='Fecha inicio contratación' 
+                                        id='start_date_contract' 
+                                        type='date'/>
+                                    <label htmlFor='start_date_contract'>Fecha inicio contratación</label>
+                                </div>
+                                <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
+
+                                </p>
+                            </div>
+                            <div className='col s12 l4'>
+                                <div className='col input-field s12 l12'>
+                                    <input 
+                                         className='datepicker validate' 
+                                         name='end_date_contract'
+                                         label='Fecha final contratación' 
+                                         id='end_date_contract' 
+                                         type='date'/>
+                                    <label htmlFor='end_date_contract'>Fecha final contratación</label>
+                                </div>
+                                <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
+
+                                </p>
+                            </div>
+                            <div className='col s12 l4'>
+                                <Input 
+                                    className='filled-in'
+                                    type={'checkbox'}
+                                    s={12} l={12} 
+                                    label='Activo' 
+                                    name={'active'}
+                                    validate 
+                                    required={true}/>
+                                <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
+
+                                </p>
                             </div>
                         </Row>
                     </div>
@@ -274,7 +342,7 @@ class AddEmployeeSection extends React.Component{
                                         validate 
                                         required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.username:''}
+
                                     </p>
                                 </div>
                                 <div className='col s12 l6'>
@@ -287,7 +355,7 @@ class AddEmployeeSection extends React.Component{
                                         validate 
                                         required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.email:''}
+                                        
                                     </p>
                                 </div>
                             </Row>
@@ -300,8 +368,7 @@ class AddEmployeeSection extends React.Component{
                                         type={'password'}
                                         validate required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.password:''}    
-                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.non_field_errors:''}      
+                               
                                     </p>
                                 </div>
                                 <div className='col s12 l6'>
@@ -313,8 +380,7 @@ class AddEmployeeSection extends React.Component{
                                         validate required={true}>
                                     </Input>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.confirm_password:''}  
-                                        {this.props.data.error.auth_user!==undefined? this.props.data.error.auth_user.non_field_errors:''}  
+
                                     </p>
                                 </div>
                             </Row>

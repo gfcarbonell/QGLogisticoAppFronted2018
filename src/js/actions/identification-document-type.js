@@ -2,14 +2,13 @@ import axios from 'axios';
 import {sessionService} from 'redux-react-session';
 import {URL, API} from './session';
 
-
-export function getSubmenus () {
+export function getIdentificationDocumentType() {
     return (dispatch) => {
-        dispatch({type: 'FETCH_SUBMENUS_REQUEST'});
+        dispatch({type: 'REQUEST_ANSWER'});
         return sessionService.loadUser()  
             .then(currentSession => {
                 return axios
-                .get(`${URL}/${API}/submenus/`, {
+                .get(`${URL}/${API}/identification-document-types/`, {
                     headers: {
                         'Accept':'application/json',
                         'Content-Type':'application/json',
@@ -17,12 +16,12 @@ export function getSubmenus () {
                     }
                 })  
                 .then((response)=>{
-                    dispatch({type:'FETCH_SUBMENUS_SUCCESS', data:response.data, loading:false});
+                    dispatch({type:'GET_IDENTIFICATION_DOCUMENT_TYPE', data:response.data, loading:false});
                 }).catch(error => {
                     //Error Request
                     if (error.response){
                         let newError = error.response ? error.response.data : 'Something went wrong, please try again.' 
-                        dispatch({type:'FETCH_SUBMENUS_ERROR', error:newError});
+                        dispatch({type:'IDENTIFICATION_DOCUMENT_TYPE_ERROR', error:newError, loading:false});
                     } 
                 });
             })
@@ -30,7 +29,7 @@ export function getSubmenus () {
                 //Error Request
                 if (error.response){
                     let newError = error.response ? error.response.data : 'Something went wrong, please try again.' 
-                    dispatch({type:'FETCH_SUBMENUS_ERROR', error:newError});
+                    dispatch({type:'IDENTIFICATION_DOCUMENT_TYPE_ERROR', error:newError, loading:false});
                 } 
             });
     };
