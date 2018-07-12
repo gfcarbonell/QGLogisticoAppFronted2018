@@ -1,0 +1,20 @@
+use empresa
+modi s
+modi struc
+use empresa excl
+modi struc
+quit
+modi report
+use empresa excl
+modi struc
+use pe_pecosa excl
+modi struc
+use un_comp excl
+modi struc
+use sc_coti excl
+modi struc
+use sc_coti excl
+modi stru
+use oc_comp excl
+modi stru
+modi stru

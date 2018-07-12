@@ -1,8 +1,9 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {Col, ProgressBar} from 'react-materialize';
-import employees from '../../../../media/images/png/Employees-4.png'
+import employees from '../../../../media/images/jpg/Employees-2.jpg'
 import providers from '../../../../media/images/png/Providers-1.png'
+import diagram from '../../../../media/images/jpg/Diagram-2.jpg'
 
 
 class Menu extends React.Component{
@@ -75,6 +76,15 @@ var menus = [
     },
     {
         id:2,
+        name:'Organigrama',
+        image:{
+            src:diagram,
+            alt:'Organigrama'
+        },
+        url:'/Organization'
+    },
+    {
+        id:3,
         name:'Proveedores',
         image:{
             src:providers,

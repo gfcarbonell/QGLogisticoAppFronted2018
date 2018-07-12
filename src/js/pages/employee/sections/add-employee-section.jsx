@@ -3,26 +3,42 @@ import {Row, Input, Button, Icon} from 'react-materialize';
 import Dropzone from 'react-dropzone';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {addUser} from '../../../actions/user';
+import {addEmployee} from '../../../actions/employee';
 import {getByUserUsername, getByUserEmail} from '../../../actions/user';
-import {getIdentificationDocumentType} from '../../../actions/identification-document-type';
+import {getIdentificationDocumentTypes} from '../../../actions/identification-document-type';
+import {getEmployeeTypes} from '../../../actions/employee-type';
+import {getEmployeePositions} from '../../../actions/employee-position';
+import {getEntityMain} from '../../../actions/entities';
+import {getHeadquartersByEntityId} from '../../../actions/headquarters';
+import {getAreaByHeadquartersId} from '../../../actions/area';
+
 import $ from 'jquery';
 import 'materialize-css';
 
 
 const mapStateToProps = (state, props) => {
     return {
-        dataUser:state.userReducer,
-        identificationDocumentTypeData: state.identificationDocumentTypeReducer
+        employeeData:state.employeeReducer,
+        identificationDocumentTypeData: state.identificationDocumentTypeReducer, 
+        employeeTypeData: state.employeeTypeReducer,
+        employeePositionData:state.employeePositionReducer,
+        entityMainData:state.entityReducer,
+        headquartersData:state.headquartersReducer,
+        areaData:state.areaReducer,
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     const actions = {
-        addUser:bindActionCreators(addUser, dispatch),
+        addEmployee:bindActionCreators(addEmployee, dispatch),
         getByUserUsername:bindActionCreators(getByUserUsername, dispatch),
         getByUserEmail:bindActionCreators(getByUserEmail, dispatch),
-        getIdentificationDocumentType:bindActionCreators(getIdentificationDocumentType, dispatch)
+        getIdentificationDocumentTypes:bindActionCreators(getIdentificationDocumentTypes, dispatch),
+        getEmployeeTypes:bindActionCreators(getEmployeeTypes, dispatch),
+        getEmployeePositions:bindActionCreators(getEmployeePositions, dispatch),
+        getEntityMain:bindActionCreators(getEntityMain, dispatch),
+        getHeadquartersByEntityId:bindActionCreators(getHeadquartersByEntityId, dispatch),
+        getAreaByHeadquartersId:bindActionCreators(getAreaByHeadquartersId, dispatch)
     };
     return actions;
 }
@@ -36,7 +52,10 @@ class AddEmployeeSection extends React.Component{
           });
         $('.tabs').tabs();
 
-        this.props.getIdentificationDocumentType();
+        this.props.getIdentificationDocumentTypes();
+        this.props.getEmployeeTypes();
+        this.props.getEmployeePositions();
+        this.props.getEntityMain();
     }
     setForm = (element) => {
         this.form = element;
@@ -44,21 +63,31 @@ class AddEmployeeSection extends React.Component{
     /* Submit */
     handleSubmit = (event) => {
         event.preventDefault();
-        let dataUserProfile = {
-            name:this.name.input.value,
-            last_name:this.lastName.input.value,
-            mother_last_name:this.motherLastName.input.value,
-            birthday:this.birthday.value.split('-').reverse().join('-'),
-            gender: $('input:radio[name=gender]:checked').val(),
-            marital_status:this.maritalStatus.state.value,
+        let dataUserProfile = JSON.stringify({
+            person:{
+                name:this.name.input.value,
+                last_name:this.lastName.input.value,
+                mother_last_name:this.motherLastName.input.value,
+                birthday:this.birthday.value.split('-').reverse().join('-'),
+                gender: $('input:radio[name=gender]:checked').val(),
+                marital_status:this.maritalStatus.state.value,
+            },
             auth_user:{
                 username:this.username.input.value,
                 email:this.email.input.value,
                 password:this.password.input.value,
                 confirm_password:this.confirmPassword.input.value
-            }
-        }
-        console.log(JSON.stringify(dataUserProfile));
+            },
+            entity:this.entity.state.value, 
+            headquarters:this.headquarters.state.value, 
+            area:this.area.state.value, 
+            employee_type:this.employeeType.state.value,
+            employee_position:this.employeePosition.state.value,
+            instruction_level:this.instructionLevel.state.value
+        });
+        console.log(dataUserProfile);
+        this.props.addEmployee(dataUserProfile);
+
     }
     /* Personal info */
     setLastName = (element) => {
@@ -88,6 +117,37 @@ class AddEmployeeSection extends React.Component{
             return $('.drop-file-info').text(`Error al subir fotografía.`).css({color:'red'})
         })
     }
+    /* Entity */
+    setEntity = (element) => {
+        this.entity = element;
+    }
+    setHeadquarters = (element) => {
+        this.headquarters = element;
+    }
+    setArea = (element) => {
+        this.area = element;
+    }
+    setEmployeeType = (element) => {
+        this.employeeType = element;
+    }
+    setEmployeePosition = (element) => {
+        this.employeePosition = element;
+    }
+    setInstructionLevel = (element) => {
+        this.instructionLevel = element;
+    }
+    handleChangeEntity = (event) => {
+        let entity = JSON.stringify({
+            id:event.target.value
+        })
+        this.props.getHeadquartersByEntityId(entity);
+    }
+    handleChangeHeadquarters = (event) => {
+        let headquarters = JSON.stringify({
+            id:event.target.value
+        })
+        this.props.getAreaByHeadquartersId(headquarters);
+    }
     /* User info */
     setUsername = (element) => {
         this.username = element;
@@ -102,11 +162,11 @@ class AddEmployeeSection extends React.Component{
         this.confirmPassword = element;
     }
     handleKeyPressUsername = (event) => {
-        let data = JSON.stringify({username:event.target.value})
+        //let data = JSON.stringify({username:event.target.value})
         //this.props.getByUserUsername(data);
     }
     handleKeyPressEmail = (event) => {
-        let data = JSON.stringify({email:event.target.value})
+        //let data = JSON.stringify({email:event.target.value})
         //this.props.getByUserEmail(data);
     }
     render(){
@@ -116,6 +176,11 @@ class AddEmployeeSection extends React.Component{
             'image/jpeg'
         ]
         let identificationDocumentTypeData = this.props.identificationDocumentTypeData.identificationDocumentType;
+        let employeeTypeData = this.props.employeeTypeData.employeeTypes;
+        let employeePositionData = this.props.employeePositionData.employeePositions;
+        let entityMainData = this.props.entityMainData.entities;
+        let headquartersData = this.props.headquartersData.headquarters? this.props.headquartersData.headquarters:[];
+        let areaData = this.props.areaData.headquarters? this.props.areaData.headquarters:[]
         return (
             <div>
                 <Row>
@@ -240,44 +305,79 @@ class AddEmployeeSection extends React.Component{
                     <div id='test-swipe-2' className='col s12'>
                         <Row>
                             <div className='col s12 l4'>
-                                <Input s={12} l={12} type='select' label='Entidad' defaultValue='1'>
-                                    <option value='1'>Option 1</option>
-                                    <option value='2'>Option 2</option>
-                                    <option value='3'>Option 3</option>
+                                <Input 
+                                    ref={this.setEntity}
+                                    s={12} l={12} type='select' label='Entidad' 
+                                    onChange={this.handleChangeEntity}  
+                                    defaultValue='0'>
+                                <option value='0'>-------</option>    
+                                    {
+                                        entityMainData.map((item, index)=>{
+                                            return <option key={item.id} value={item.id}> {item.name}</option>     
+                                        })
+                                    }
                                 </Input>
                             </div>
                             <div className='col s12 l4'>
-                                <Input s={12} l={12} type='select' label='Sede' defaultValue='1'>
-                                    <option value='1'>Option 1</option>
-                                    <option value='2'>Option 2</option>
-                                    <option value='3'>Option 3</option>
+                                <Input 
+                                    ref = {this.setHeadquarters}
+                                    s={12} l={12} type='select' 
+                                    label='Sede' 
+                                    onChange={this.handleChangeHeadquarters} 
+                                    defaultValue='0'>
+                                    <option value='0'>-------</option>    
+                                    {
+                                        headquartersData.map((item, index)=>{
+                                            return <option key={item.id} value={item.id}> {item.name}</option>     
+                                        })
+                                    }
                                 </Input>
                             </div>
                             <div className='col s12 l4'>
-                                <Input s={12} l={12} type='select' label='Área' defaultValue='1'>
-                                    <option value='1'>Option 1</option>
-                                    <option value='2'>Option 2</option>
-                                    <option value='3'>Option 3</option>
+                                <Input 
+                                    ref = {this.setArea}
+                                    s={12} l={12} 
+                                    type='select' 
+                                    label='Área' 
+                                    defaultValue='0'>
+                                    <option value='0'>-------</option>    
+                                    {
+                                        areaData.map((item, index)=>{
+                                            return <option key={item.id} value={item.id}> {item.name}</option>     
+                                        })
+                                    }
                                 </Input>
                             </div>
                         </Row>
                         <Row>
                             <div className='col s12 l4'>
-                                <Input s={12} l={12} type='select' label='Tipoe empleado' defaultValue='1'>
-                                    <option value='1'>Option 1</option>
-                                    <option value='2'>Option 2</option>
-                                    <option value='3'>Option 3</option>
+                                <Input 
+                                    ref={this.setEmployeeType}
+                                    s={12} l={12} type='select' 
+                                    label='Tipo empleado' defaultValue='1'>
+                                    {
+                                        employeeTypeData.map((item, index)=>{
+                                            return <option key={item.id} value={item.id}> {item.name}</option>     
+                                        })
+                                    }
                                 </Input>
                             </div>
                             <div className='col s12 l4'>
-                                <Input s={12} l={12} type='select' label='Cargo Empleado' defaultValue='1'>
-                                    <option value='1'>Option 1</option>
-                                    <option value='2'>Option 2</option>
-                                    <option value='3'>Option 3</option>
+                                <Input 
+                                    ref={this.setEmployeePosition}
+                                    s={12} l={12} type='select' 
+                                    label='Cargo Empleado' defaultValue='1'>
+                                    {
+                                        employeePositionData.map((item, index)=>{
+                                            return <option key={item.id} value={item.id}> {item.name}</option>     
+                                        })
+                                    }
                                 </Input>
                             </div>
                             <div className='col s12 l4'>
-                                <Input s={12} l={12} type='select' label='Nivel Instrucción' defaultValue='1'>
+                                <Input 
+                                    ref={this.setInstructionLevel}
+                                    s={12} l={12} type='select' label='Nivel Instrucción'>
                                     <option value='Sin nivel'>Sin nivel</option>
                                     <option value='Pre escolar'>Pre escolar</option>
                                     <option value='Primaria'>Primaria</option>

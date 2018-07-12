@@ -2,7 +2,7 @@ import axios from 'axios';
 import {sessionService} from 'redux-react-session';
 import {URL, API} from './session';
 
-export function getIdentificationDocumentType() {
+export function getIdentificationDocumentTypes() {
     return (dispatch) => {
         dispatch({type: 'REQUEST_ANSWER'});
         return sessionService.loadUser()  

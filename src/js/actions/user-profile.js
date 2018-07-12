@@ -8,7 +8,7 @@ export function addUserProfile (data) {
         return sessionService.loadUser()  
             .then(currentSession => {
                 return axios
-                .post(`${URL}/${API}/user-profiles/`, data, {
+                .post(`${URL}/${API}/auth-user-profiles/`, data, {
                     headers: {
                         'Accept':'application/json',
                         'Content-Type':'application/json',
