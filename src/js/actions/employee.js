@@ -34,3 +34,35 @@ export function addEmployee (data) {
             });
     };
 }
+
+export function getEmployees () {
+    return (dispatch) => {
+        return sessionService.loadUser()  
+            .then(currentSession => {
+                return axios
+                .get(`${URL}/${API}/employees/`, {
+                    headers: {
+                        'Accept':'application/json',
+                        'Content-Type':'application/json',
+                        'Authorization': `Token ${currentSession.token}`,
+                    }
+                })  
+                .then((response)=>{
+                    dispatch({type:'GET_EMPLOYEES', data:response.data, loading:false});
+                }).catch(error => {
+                    //Error Request
+                    if (error.response){
+                        let newError = error.response ? error.response.data : 'Something went wrong, please try again.'; 
+                        dispatch({type:'EMPLOYEE_ERROR', error:newError, loading:false});
+                    } 
+                });
+            })
+            .catch(error => {
+                //Error Request
+                if (error.response){
+                    let newError = error.response ? error.response.data : 'Something went wrong, please try again.';
+                    dispatch({type:'EMPLOYEE_ERROR', error:newError, loading:false});
+                } 
+            });
+    };
+}

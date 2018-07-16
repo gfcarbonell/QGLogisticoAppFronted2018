@@ -8,7 +8,29 @@ import PrivateRoute from '../../../utils/private-route';
 
 //Section
 import AddEmployeeSection from '../sections/add-employee-section';
+import EmployeesSection from '../sections/employees-section';
 
+
+let data = [
+    {
+        id:1,
+        name:'Agregar Empleado',
+        image:{
+            src: defaultImage,
+            alt: 'Add Employee'
+        },
+        url:'/add-employee'
+    },
+    {
+        id:2,
+        name:'Empleados',
+        image:{
+            src: defaultImage,
+            alt: 'Employee'
+        },
+        url:'/list'
+    }
+]
 
 const mapStateToProps = (state, props) => {
     return {
@@ -29,6 +51,7 @@ class EmployeePage extends React.Component {
 
         return (
             <div className='panel row'>
+                <br />
                 <div className='panel-left col s12 m5 l3'> 
                     <div className='panel-left-wrapper'>
                         <div>
@@ -65,7 +88,12 @@ class EmployeePage extends React.Component {
                         <PrivateRoute
                             authenticated={authenticated}
                             path='/employees/add-employee'
-                         component={AddEmployeeSection}
+                            component={AddEmployeeSection}
+                        />
+                        <PrivateRoute
+                            authenticated={authenticated}
+                            path='/employees/list'
+                            component={EmployeesSection}
                         />
                     </div>
                 </div>
@@ -91,43 +119,6 @@ EmployeePage.defaultProps = {
     ]
 };
 
-let data = [
-    {
-        id:1,
-        name:'Agregar Empleado',
-        image:{
-            src: defaultImage,
-            alt: 'Add Employee'
-        },
-        url:'/add-employee'
-    },
-    {
-        id:2,
-        name:'Empleados',
-        image:{
-            src: defaultImage,
-            alt: 'Employee'
-        },
-        url:'/list'
-    },
-    {
-        id:4,
-        name:'Imprimir',
-        image:{
-            src: defaultImage,
-            alt: 'Printer'
-        },
-        url:'/print'
-    },
-    {
-        id:3,
-        name:'Dashboard',
-        image:{
-            src: defaultImage,
-            alt: 'Dashboard'
-        },
-        url:'/dashboard'
-    }
-]
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(EmployeePage);

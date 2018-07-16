@@ -13,6 +13,13 @@ const employeeReducer = (state = stateInitital, action) =>
                 loading:action.loading,
                 employees:state.employees.concat(action.data),
             }
+        case 'GET_EMPLOYEES':
+            return {
+                ...state, 
+                employees:action.data,
+                loading:action.loading,
+
+            }
         case 'EMPLOYEE_ERROR':
             return { 
                 ...state,
@@ -22,4 +29,4 @@ const employeeReducer = (state = stateInitital, action) =>
             return state;
     }
 }
-export default entityReducer;
+export default employeeReducer;
