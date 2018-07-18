@@ -51,7 +51,8 @@ class AddEmployeeSection extends React.Component{
             selectYears: 120 // Creates a dropdown of 15 years to control year
           });
         $('.tabs').tabs();
-
+    }
+    componentWillMount(){
         this.props.getIdentificationDocumentTypes();
         this.props.getEmployeeTypes();
         this.props.getEmployeePositions();
@@ -296,8 +297,8 @@ class AddEmployeeSection extends React.Component{
                                         </Dropzone>
                                         <p className='drop-file-info center-align' >
                                                 File: Default - 0 bytes. 
-                                            </p>
-                                        </div>
+                                        </p>
+                                    </div>
                                 </div> 
                             </Row>
                         </div>                                      

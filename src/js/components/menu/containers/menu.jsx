@@ -6,6 +6,36 @@ import providers from '../../../../media/images/png/Providers-1.png'
 import diagram from '../../../../media/images/jpg/Diagram-2.jpg'
 
 
+var menus = [
+    {
+        id:1,
+        name:'Empleados',
+        image:{
+            src:employees,
+            alt:'employees'
+        },
+        url:'/employees'
+    },
+    {
+        id:2,
+        name:'Organigrama',
+        image:{
+            src:diagram,
+            alt:'Organigrama'
+        },
+        url:'/organizations'
+    },
+    {
+        id:3,
+        name:'Proveedores',
+        image:{
+            src:providers,
+            alt:'providers'
+        },
+        url:'/providers'
+    }
+]
+
 class Menu extends React.Component{
     state = {
         menus:[],
@@ -64,34 +94,5 @@ class Menu extends React.Component{
     }
 }
 
-var menus = [
-    {
-        id:1,
-        name:'Empleados',
-        image:{
-            src:employees,
-            alt:'employees'
-        },
-        url:'/employees'
-    },
-    {
-        id:2,
-        name:'Organigrama',
-        image:{
-            src:diagram,
-            alt:'Organigrama'
-        },
-        url:'/Organization'
-    },
-    {
-        id:3,
-        name:'Proveedores',
-        image:{
-            src:providers,
-            alt:'providers'
-        },
-        url:'/providers'
-    }
-]
 
 export default Menu;

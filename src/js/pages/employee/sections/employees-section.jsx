@@ -1,5 +1,5 @@
 import React  from 'react';
-import {Row, Input} from 'react-materialize'
+import {Row, Input, Button} from 'react-materialize'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getEmployees} from '../../../actions/employee';
@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch, props) => {
 
 
 class EmployeesSection extends React.Component{
-    componentDidMount(){
+    componentWillMount(){
         this.props.getEmployees();
         this.setState({
             search: ''
@@ -148,7 +148,7 @@ class EmployeesSection extends React.Component{
     }
     render () {
         let employeeData = this.props.employeeData.employees;
-        let search = this.state.search === null || this.state.search === undefined? "": this.state.search ; 
+        let search = this.state.search === null || this.state.search === undefined? '': this.state.search ; 
         const items =  employeeData.filter(item => {
             return  item.person.name.toUpperCase().indexOf(search) !== -1 || 
                     item.person.last_name.toUpperCase().indexOf(search) !== -1 ||
@@ -164,17 +164,19 @@ class EmployeesSection extends React.Component{
                 </div>
                 <form className='search' onSubmit={this.props.handleSubmit}>
                     <Row>
-                        <Input 
-                            ref={this.setInputSearchRef} 
-                            onKeyPress={this.handleKeyPress} 
-                            onChange={this.handleInputChange} 
-                            s={12} m={6} l={8} label='Buscar' required={true}/>
-                        <div className='input-field col s12 m4 l4'>
-                            <button className='btn'>
-                                Eliminar todo
-                            </button>
+                        <div className='col s12 m12 l9'>
+                            <Input 
+                                ref={this.setInputSearchRef} 
+                                onKeyPress={this.handleKeyPress} 
+                                onChange={this.handleInputChange} 
+                                s={12} l={12} label='Buscar' required={true}/>
                         </div>
-                    </Row>           
+                        <div className='col s12 m12 l3'>
+                            <div className='col input-field s12 l12'>
+                                <a className="waves-effect waves-light btn display-block-100">Eliminar Todo</a>
+                            </div>
+                        </div>
+                    </Row>
                 </form>
                 <ReactTable
                     data={items}

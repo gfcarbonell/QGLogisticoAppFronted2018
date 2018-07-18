@@ -15,6 +15,7 @@ import logo from '../../media/images/png/QG-1.png';
 //Pages 
 import MenuPage from './menu/containers/menu-page';
 import EmployeePage from './employee/containers/employee-page'
+import OrganizationPage from './organization/containers/organization-page'
 import Login from '../components/login/containers/login';
 //Routes 
 import PrivateRoute from '../utils/private-route';
@@ -74,7 +75,8 @@ class Main extends React.Component {
                     <main>
                         <Switch >
                             <PublicRoute authenticated={this.props.session.authenticated} path='/login' component={Login} />
-                            <PrivateRoute authenticated={this.props.session.authenticated} path='/employees' component={EmployeePage} />
+                            <PrivateRoute authenticated={this.props.session.authenticated} path='/employees' component={EmployeePage}/>
+                            <PrivateRoute authenticated={this.props.session.authenticated} path='/organizations' component={OrganizationPage}/>
                             <PrivateRoute authenticated={this.props.session.authenticated} path='/main-menu' component={MenuPage} />
                         </Switch>
                     </main>
