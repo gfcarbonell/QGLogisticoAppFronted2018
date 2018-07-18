@@ -311,7 +311,7 @@ class AddEmployeeSection extends React.Component{
                                     s={12} l={12} type='select' label='Entidad' 
                                     onChange={this.handleChangeEntity}  
                                     defaultValue='0'>
-                                <option value='0'>-------</option>    
+                                    <option value='0'>-------</option>    
                                     {
                                         entityMainData.map((item, index)=>{
                                             return <option key={item.id} value={item.id}> {item.name}</option>     
