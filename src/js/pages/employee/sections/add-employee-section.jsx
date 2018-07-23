@@ -51,12 +51,35 @@ class AddEmployeeSection extends React.Component{
             selectYears: 120 // Creates a dropdown of 15 years to control year
           });
         $('.tabs').tabs();
+
+        $(`#headquarters`).attr('disabled', false);
+        $(`#area`).attr('disabled', false);
     }
     componentWillMount(){
         this.props.getIdentificationDocumentTypes();
         this.props.getEmployeeTypes();
         this.props.getEmployeePositions();
-        this.props.getEntityMain();
+        this.props.getEntityMain()
+        .then(()=>{
+            if(this.props.entityMainData.entities.length>0){
+                this.props.entityMainData.entities.map((entity, index)=>{
+                    if(entity.main===true && entity.active===true){
+                        let data = JSON.stringify({
+                            id:entity.id
+                        });
+                        this.props.getHeadquartersByEntityId(data)
+                        .then(()=>{
+                            if(this.props.headquartersData.headquarters.length>0){
+                                let data = JSON.stringify({
+                                    id:this.props.headquartersData.headquarters[0].id
+                                });
+                                this.props.getAreaByHeadquartersId(data);
+                            }
+                        });
+                    }
+                })
+            }
+        });
     }
     setForm = (element) => {
         this.form = element;
@@ -72,6 +95,14 @@ class AddEmployeeSection extends React.Component{
                 birthday:this.birthday.value.split('-').reverse().join('-'),
                 gender: $('input:radio[name=gender]:checked').val(),
                 marital_status:this.maritalStatus.state.value,
+                contact_information:[{
+                    email:this.emailPersonal.input.value,
+                    cell_phone:this.cellPhone.input.value,
+                    telephone:this.telephone.input.value
+                }], 
+                extra_information:[{
+                   
+                }]
             },
             auth_user:{
                 username:this.username.input.value,
@@ -79,12 +110,13 @@ class AddEmployeeSection extends React.Component{
                 password:this.password.input.value,
                 confirm_password:this.confirmPassword.input.value
             },
-            entity:this.entity.state.value, 
-            headquarters:this.headquarters.state.value, 
-            area:this.area.state.value, 
-            employee_type:this.employeeType.state.value,
-            employee_position:this.employeePosition.state.value,
-            instruction_level:this.instructionLevel.state.value
+            area_id:this.area.state.value,
+            employee_type_id:this.employeeType.state.value,
+            employee_position_id:this.employeePosition.state.value,
+            instruction_level:this.instructionLevel.selectInput.value,
+            start_date_contract:this.startDateContract.value.split('-').reverse().join('-'),
+            end_date_contract:this.endDateContract.value.split('-').reverse().join('-'),
+            active:this.active.state.checked, 
         });
         console.log(dataUserProfile);
         this.props.addEmployee(dataUserProfile);
@@ -137,17 +169,21 @@ class AddEmployeeSection extends React.Component{
     setInstructionLevel = (element) => {
         this.instructionLevel = element;
     }
-    handleChangeEntity = (event) => {
-        let entity = JSON.stringify({
-            id:event.target.value
-        })
-        this.props.getHeadquartersByEntityId(entity);
+    setStartDateContract = (element) => {
+        this.startDateContract = element;
+    }
+    setEndDateContract = (element) => {
+        this.endDateContract = element;
+    }
+    setActive = (element) => {
+        this.active = element;
     }
     handleChangeHeadquarters = (event) => {
         let headquarters = JSON.stringify({
             id:event.target.value
         })
         this.props.getAreaByHeadquartersId(headquarters);
+        $(`#area`).attr('disabled', false);
     }
     /* User info */
     setUsername = (element) => {
@@ -170,6 +206,16 @@ class AddEmployeeSection extends React.Component{
         //let data = JSON.stringify({email:event.target.value})
         //this.props.getByUserEmail(data);
     }
+    /* Extra Info */
+    setCellPhone = (element) => {
+        this.cellPhone = element;
+    }
+    setTelephone = (element) => {
+        this.telephone = element;
+    }
+    setEmailPersonal = (element) => {
+        this.emailPersonal =  element;
+    }
     render(){
         let imageAccept = [
             'image/png',
@@ -182,6 +228,7 @@ class AddEmployeeSection extends React.Component{
         let entityMainData = this.props.entityMainData.entities;
         let headquartersData = this.props.headquartersData.headquarters? this.props.headquartersData.headquarters:[];
         let areaData = this.props.areaData.headquarters? this.props.areaData.headquarters:[]
+        let employeeData = this.props.employeeData;
         return (
             <div>
                 <Row>
@@ -207,28 +254,28 @@ class AddEmployeeSection extends React.Component{
                                 <div className='col s12 l4'>
                                     <Input ref={this.setLastName} s={12} l={12} label='Apellido paterno' validate required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                                    
+                                        {employeeData.error.length!==0? employeeData.error.person.last_name:''}
                                     </p>
                                 </div>
                                 <div className='col s12 l4'>
                                     <Input ref={this.setMotherLastName} s={12} l={12} label='Apellido materno' validate></Input>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-
+                                        {employeeData.error.length!==0? employeeData.error.person.mother_last_name:''}
                                     </p>
                                 </div>
                                 <div className='col s12 l4'>
                                     <Input ref={this.setName} s={12} l={12} label='Nombre(s)' validate required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-
+                                        {employeeData.error.length!==0? employeeData.error.person.name:''}
                                     </p>
                                 </div>
                             </Row>
                             <Row>
                                 <div className='col s12 l4'>
-                                    <Input s={12} l={12} type='select' label='Tipo documento de identificación' defaultValue='1'>
+                                    <Input s={12} l={12} type='select' label='Documento de identificación' defaultValue='1'>
                                         {
                                             identificationDocumentTypeData.map((item, index)=>(
-                                                <option key={item.id} value={item.id}>{item.name}</option>
+                                                <option key={item.id} value={item.id}>{item.initials}</option>
                                             ))
                                         }
                                     </Input>
@@ -247,7 +294,7 @@ class AddEmployeeSection extends React.Component{
                                         <label htmlFor='birthday'>Fecha de nacimineto</label>
                                     </div>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-
+                                        {employeeData.error.length!==0? employeeData.error.person.birthday:''}    
                                     </p>
                                 </div>
                             </Row>
@@ -311,7 +358,6 @@ class AddEmployeeSection extends React.Component{
                                     s={12} l={12} type='select' label='Entidad' 
                                     onChange={this.handleChangeEntity}  
                                     defaultValue='0'>
-                                    <option value='0'>-------</option>    
                                     {
                                         entityMainData.map((item, index)=>{
                                             return <option key={item.id} value={item.id}> {item.name}</option>     
@@ -324,9 +370,9 @@ class AddEmployeeSection extends React.Component{
                                     ref = {this.setHeadquarters}
                                     s={12} l={12} type='select' 
                                     label='Sede' 
+                                    id='headquarters'
                                     onChange={this.handleChangeHeadquarters} 
-                                    defaultValue='0'>
-                                    <option value='0'>-------</option>    
+                                    disabled={true}>
                                     {
                                         headquartersData.map((item, index)=>{
                                             return <option key={item.id} value={item.id}> {item.name}</option>     
@@ -340,14 +386,18 @@ class AddEmployeeSection extends React.Component{
                                     s={12} l={12} 
                                     type='select' 
                                     label='Área' 
-                                    defaultValue='0'>
-                                    <option value='0'>-------</option>    
+                                    id='area'
+                                    disabled={true}> 
+                                    <option value={0}> ------- </option>
                                     {
                                         areaData.map((item, index)=>{
                                             return <option key={item.id} value={item.id}> {item.name}</option>     
                                         })
                                     }
                                 </Input>
+                                <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
+                                    {employeeData.error.length!==0? employeeData.error.area_id:''}    
+                                </p>
                             </div>
                         </Row>
                         <Row>
@@ -376,9 +426,7 @@ class AddEmployeeSection extends React.Component{
                                 </Input>
                             </div>
                             <div className='col s12 l4'>
-                                <Input 
-                                    ref={this.setInstructionLevel}
-                                    s={12} l={12} type='select' label='Nivel Instrucción'>
+                                <Input ref={this.setInstructionLevel} s={12} l={12} type='select' label='Nivel Instrucción'>
                                     <option value='Sin nivel'>Sin nivel</option>
                                     <option value='Pre escolar'>Pre escolar</option>
                                     <option value='Primaria'>Primaria</option>
@@ -391,6 +439,7 @@ class AddEmployeeSection extends React.Component{
                             <div className='col s12 l4'>
                                 <div className='col input-field s12 l12'>
                                     <input 
+                                        ref={this.setStartDateContract}
                                         className='datepicker validate' 
                                         name='start_date_contract'
                                         label='Fecha inicio contratación' 
@@ -405,11 +454,12 @@ class AddEmployeeSection extends React.Component{
                             <div className='col s12 l4'>
                                 <div className='col input-field s12 l12'>
                                     <input 
-                                         className='datepicker validate' 
-                                         name='end_date_contract'
-                                         label='Fecha final contratación' 
-                                         id='end_date_contract' 
-                                         type='date'/>
+                                        ref={this.setEndDateContract}
+                                        className='datepicker validate' 
+                                        name='end_date_contract'
+                                        label='Fecha final contratación' 
+                                        id='end_date_contract' 
+                                        type='date'/>
                                     <label htmlFor='end_date_contract'>Fecha final contratación</label>
                                 </div>
                                 <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
@@ -418,6 +468,7 @@ class AddEmployeeSection extends React.Component{
                             </div>
                             <div className='col s12 l4'>
                                 <Input 
+                                    ref={this.setActive}
                                     className='filled-in'
                                     type={'checkbox'}
                                     s={12} l={12} 
@@ -443,7 +494,7 @@ class AddEmployeeSection extends React.Component{
                                         validate 
                                         required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-
+                                        
                                     </p>
                                 </div>
                                 <div className='col s12 l6'>
@@ -469,7 +520,8 @@ class AddEmployeeSection extends React.Component{
                                         type={'password'}
                                         validate required={true}/>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-                               
+                                        
+                                       
                                     </p>
                                 </div>
                                 <div className='col s12 l6'>
@@ -481,7 +533,7 @@ class AddEmployeeSection extends React.Component{
                                         validate required={true}>
                                     </Input>
                                     <p className='error col s12 l12 font-style-italic letf-align red-text font-weight-bolder'> 
-
+                                     
                                     </p>
                                 </div>
                             </Row>

@@ -21,6 +21,7 @@ export function getEntityMain() {
                 })  
                 .then((response)=>{
                     dispatch({type:'GET_ENTITY_MAIN', data:response.data, loading:false});
+                    return response;
                 }).catch(error => {
                     //Error Request
                     if (error.response){
